@@ -1,75 +1,111 @@
 {
-    "kind": "collectionType",
-    "collectionName": "up_users",
-    "info": {
-        "name": "user",
-        "description": "",
-        "singularName": "user",
-        "pluralName": "users",
-        "displayName": "User"
+  "kind": "collectionType",
+  "collectionName": "up_users",
+  "info": {
+    "name": "user",
+    "description": "",
+    "singularName": "user",
+    "pluralName": "users",
+    "displayName": "User"
+  },
+  "options": {
+    "draftAndPublish": false,
+    "timestamps": true
+  },
+  "attributes": {
+    "username": {
+      "type": "string",
+      "minLength": 3,
+      "unique": true,
+      "configurable": false,
+      "required": true
     },
-    "options": {
-        "draftAndPublish": false,
-        "timestamps": true
+    "provider": {
+      "type": "string",
+      "configurable": false
     },
-    "attributes": {
-        "username": {
-            "type": "string",
-            "minLength": 3,
-            "unique": true,
-            "configurable": false,
-            "required": true
-        },
-        "provider": {
-            "type": "string",
-            "configurable": false
-        },
-        "password": {
-            "type": "password",
-            "minLength": 6,
-            "configurable": false,
-            "private": true
-        },
-        "resetPasswordToken": {
-            "type": "string",
-            "configurable": false,
-            "private": true
-        },
-        "confirmationToken": {
-            "type": "string",
-            "configurable": false,
-            "private": true
-        },
-        "confirmed": {
-            "type": "boolean",
-            "default": false,
-            "configurable": false
-        },
-        "blocked": {
-            "type": "boolean",
-            "default": false,
-            "configurable": false
-        },
-        "role": {
-            "type": "relation",
-            "relation": "manyToOne",
-            "target": "plugin::users-permissions.role",
-            "inversedBy": "users",
-            "configurable": false
-        },
-        "name": {
-            "type": "string",
-            "required": true
-        },
-        "sex": {
-            "type": "enumeration",
-            "enum": [
-                "Male",
-                "Female",
-                "Unknown"
-            ],
-            "default": "Unknown",
-            "required": true
-        }
+    "password": {
+      "type": "password",
+      "minLength": 6,
+      "configurable": false,
+      "private": true
+    },
+    "resetPasswordToken": {
+      "type": "string",
+      "configurable": false,
+      "private": true
+    },
+    "confirmationToken": {
+      "type": "string",
+      "configurable": false,
+      "private": true
+    },
+    "confirmed": {
+      "type": "boolean",
+      "default": false,
+      "configurable": false
+    },
+    "blocked": {
+      "type": "boolean",
+      "default": false,
+      "configurable": false
+    },
+    "role": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.role",
+      "inversedBy": "users",
+      "configurable": false
+    },
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "sex": {
+      "type": "enumeration",
+      "enum": [
+        "Male",
+        "Female",
+        "Unknown"
+      ],
+      "default": "Unknown",
+      "required": true
+    },
+    "campus": {
+      "type": "enumeration",
+      "enum": [
+        "Ganesha",
+        "Jatinangor",
+        "Cirebon",
+        "-"
+      ],
+      "required": true,
+      "default": "-"
+    },
+    "faculty": {
+      "type": "enumeration",
+      "enum": [
+        "FITB",
+        "FMIPA",
+        "FSRD",
+        "FTI",
+        "FTMD",
+        "FTTM",
+        "FTSL",
+        "SAPPK",
+        "SBM",
+        "SF",
+        "SITH",
+        "STEI",
+        "-"
+      ],
+      "required": true,
+      "default": "-"
+    },
+    "email": {
+      "type": "email",
+      "default": "unknown@gmail.com",
+      "required": true
     }
+  }
 }
