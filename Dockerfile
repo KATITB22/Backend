@@ -5,4 +5,5 @@ RUN npm install
 COPY . .
 EXPOSE 1337
 ENV NODE_ENV=production
-CMD ["npm", "run", "start"]
+ENV TZ=Asia/Jakarta
+CMD ["npm", "run", "docker:start"]
