@@ -25,13 +25,12 @@ jobs:
         needs: [build]
         steps:
             - name: Deployment
-              uses: cross-the-world/ssh-scp-ssh-pipelines@latest
+              uses: appleboy/ssh-action@master
               with:
                   host: ${{ secrets.STAGING_HOST_ADDRESS }}
-                  user: ${{ secrets.STAGING_HOST_USERNAME }}
-                  pass: ${{ secrets.STAGING_HOST_PASSWORD }}
-                  connect_timeout: 10s
-                  first_ssh: |
+                  username: ${{ secrets.STAGING_HOST_USERNAME }}
+                  password: ${{ secrets.STAGING_HOST_PASSWORD }}
+                  script: |
                       cd server
                       docker-compose pull
                       docker-compose up -d --remove-orphans
