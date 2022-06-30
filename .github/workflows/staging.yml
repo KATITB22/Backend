@@ -2,31 +2,38 @@
 
 name: staging
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "master" branch
-  push:
-    branches: [ "development" ]
+    push:
+        branches: ["development"]
+    workflow_dispatch:
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-      - name: Publish Latest to Registry
-        uses: elgohr/Publish-Docker-Github-Action@master
-        with:
-          name: KATITB22/Backend/development
-          username: ${{ secrets.PKG_REGISTRY_USERNAME }}
-          password: ${{ secrets.PKG_REGISTRY_PASSWORD }}
-          registry: docker.pkg.github.com
-          tags: 'latest'
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Publish Latest to Registry
+              uses: elgohr/Publish-Docker-Github-Action@master
+              with:
+                  name: KATITB22/Backend/development
+                  username: ${{ secrets.PKG_REGISTRY_USERNAME }}
+                  password: ${{ secrets.PKG_REGISTRY_PASSWORD }}
+                  registry: docker.pkg.github.com
+                  tags: "latest"
+            - name: Deployment
+              uses: cross-the-world/ssh-scp-ssh-pipelines@latest
+              with:
+                  host: ${{ secrets.STAGING_HOST_ADDRESS }}
+                  user: ${{ secrets.STAGING_HOST_USERNAME }}
+                  pass: ${{ secrets.STAGING_HOST_PASSWORD }}
+                  connect_timeout: 10s
+                  first_ssh: |
+                      cd server
+                      docker-compose pull
+                      docker-compose up -d --remove-orphans
+                      docker image prune -f
+            - name: Backend Status
+              uses: lakuapik/gh-actions-http-status@v1
+              with:
+                  sites: '["https://api.staging.katitb22.com"]'
+                  expected: "[200]"
