@@ -61,8 +61,19 @@ module.exports = createCoreController("api::group.group", ({ strapi }) => ({
         const { id } = ctx.params;
 
         const entity = await strapi.db.query("api::group.group").findOne({
+            populate: {
+                members: {
+                    select: ["username"],
+                },
+                leaders: {
+                    select: ["username"],
+                },
+            },
             where: { ext_id: id },
         });
+        entity.members = entity.members.map((each) => each.username);
+        entity.leaders = entity.leaders.map((each) => each.username);
+
         return entity;
     },
 
