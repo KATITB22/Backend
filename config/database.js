@@ -7,7 +7,9 @@ module.exports = ({ env }) => ({
             database: env("DATABASE_NAME", "KAT"),
             user: env("DATABASE_USERNAME", "postgres"),
             password: env("DATABASE_PASSWORD", "password"),
-            ssl: env.bool("DATABASE_SSL", false),
+            ssl: {
+                rejectUnauthorized: env.bool("DATABASE_SSL_SELF", false),
+            },
         },
     },
 });
