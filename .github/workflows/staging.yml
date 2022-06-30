@@ -44,5 +44,5 @@ jobs:
               with:
                   url: https://api.staging.katitb22.com
                   responseCode: 200
-                  timeout: 60000
-                  interval: 500
+                  timeout: 75
+                  interval: 1
