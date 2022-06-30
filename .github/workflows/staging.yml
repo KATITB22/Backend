@@ -20,6 +20,10 @@ jobs:
                   password: ${{ secrets.PKG_REGISTRY_PASSWORD }}
                   registry: docker.pkg.github.com
                   tags: "latest"
+    deploy:
+        runs-on: ubuntu-latest
+        needs: [build]
+        steps:
             - name: Deployment
               uses: cross-the-world/ssh-scp-ssh-pipelines@latest
               with:
@@ -32,8 +36,14 @@ jobs:
                       docker-compose pull
                       docker-compose up -d --remove-orphans
                       docker image prune -f
+    check-status:
+        runs-on: ubuntu-latest
+        needs: [deploy]
+        steps:
             - name: Backend Status
-              uses: lakuapik/gh-actions-http-status@v1
+              uses: cygnetdigital/wait_for_response@v2.0.0
               with:
-                  sites: '["https://api.staging.katitb22.com"]'
-                  expected: "[200]"
+                  url: "https://api.staging.katitb22.com"
+                  responseCode: "200"
+                  timeout: "75000"
+                  interval: "1000"
