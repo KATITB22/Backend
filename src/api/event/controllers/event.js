@@ -81,4 +81,26 @@ module.exports = createCoreController("api::event.event", ({ strapi }) => ({
         });
         return entity;
     },
+
+    async update(ctx) {
+        validateYupSchemaSync(createSchema)(ctx.request.body);
+        const { id } = ctx.params;
+        const {
+            title,
+            attendance_start = new Date(),
+            attendance_end = new Date(),
+            attendance_type,
+        } = ctx.request.body;
+
+        const entity = await strapi.db.query("api::topic.topic").create({
+            where: { ext_id: id },
+            data: {
+                title,
+                attendance_end,
+                attendance_start,
+                attendance_type,
+            },
+        });
+        return entity;
+    },
 }));

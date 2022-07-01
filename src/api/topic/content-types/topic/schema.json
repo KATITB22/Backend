@@ -33,6 +33,11 @@
       "relation": "oneToMany",
       "target": "api::question.question",
       "mappedBy": "topic"
+    },
+    "score_released": {
+      "type": "boolean",
+      "default": false,
+      "required": true
     }
   }
 }
