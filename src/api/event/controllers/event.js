@@ -26,6 +26,24 @@ const createSchema = yup.object().shape({
 });
 
 module.exports = createCoreController("api::event.event", ({ strapi }) => ({
+    async find() {
+        const entities = await strapi.db.query("api::event.event").findMany({
+            orderBy: ["attendance_start"],
+            select: ["title", "attendance_start", "attendance_end", "ext_id"],
+        });
+        const result = Array.isArray(entities)
+            ? entities.map((each) => ({
+                  ext_id: each.ext_id,
+                  title: each.title,
+                  start: each.attendance_start,
+                  end: each.attendance_end,
+              }))
+            : [];
+        return {
+            data: result,
+        };
+    },
+
     async findOne(ctx) {
         const { id } = ctx.params;
 

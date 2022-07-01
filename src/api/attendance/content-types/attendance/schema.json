@@ -17,27 +17,10 @@
       "relation": "oneToOne",
       "target": "api::event.event"
     },
-    "member": {
+    "user": {
       "type": "relation",
       "relation": "oneToOne",
       "target": "plugin::users-permissions.user"
-    },
-    "status": {
-      "type": "enumeration",
-      "enum": [
-        "Hadir",
-        "B",
-        "C",
-        "D",
-        "Tidak Hadir"
-      ],
-      "default": "Tidak Hadir",
-      "required": true
-    },
-    "group": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::group.group"
     }
   }
 }
