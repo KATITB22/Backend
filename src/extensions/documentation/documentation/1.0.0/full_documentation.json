@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "2022-06-30T11:46:18.860Z"
+    "x-generation-date": "2022-07-01T10:12:03.061Z"
   },
   "x-strapi-config": {
     "path": "/documentation",
@@ -4249,6 +4249,9 @@
                                     }
                                   }
                                 },
+                                "score_released": {
+                                  "type": "boolean"
+                                },
                                 "createdAt": {
                                   "type": "string",
                                   "format": "date-time"
@@ -4772,6 +4775,9 @@
                                   }
                                 }
                               },
+                              "score_released": {
+                                "type": "boolean"
+                              },
                               "createdAt": {
                                 "type": "string",
                                 "format": "date-time"
@@ -4884,7 +4890,8 @@
             "required": [
               "title",
               "start",
-              "end"
+              "end",
+              "score_released"
             ],
             "type": "object",
             "properties": {
@@ -4915,6 +4922,9 @@
                   ],
                   "example": "string or id"
                 }
+              },
+              "score_released": {
+                "type": "boolean"
               }
             }
           }
@@ -5021,6 +5031,9 @@
                                                     }
                                                   }
                                                 }
+                                              },
+                                              "score_released": {
+                                                "type": "boolean"
                                               },
                                               "createdAt": {
                                                 "type": "string",
@@ -5373,6 +5386,9 @@
                         }
                       }
                     },
+                    "score_released": {
+                      "type": "boolean"
+                    },
                     "createdAt": {
                       "type": "string",
                       "format": "date-time"
@@ -5544,6 +5560,9 @@
                                                   }
                                                 }
                                               }
+                                            },
+                                            "score_released": {
+                                              "type": "boolean"
                                             },
                                             "createdAt": {
                                               "type": "string",
@@ -5895,6 +5914,9 @@
                         }
                       }
                     }
+                  },
+                  "score_released": {
+                    "type": "boolean"
                   },
                   "createdAt": {
                     "type": "string",
