@@ -35,7 +35,7 @@
     "score": {
       "type": "integer",
       "min": 0,
-      "max": 1000,
+      "max": 10000,
       "required": true
     },
     "topic": {
@@ -43,10 +43,6 @@
       "relation": "manyToOne",
       "target": "api::topic.topic",
       "inversedBy": "questions"
-    },
-    "expected_answer": {
-      "type": "string",
-      "private": true
     }
   }
 }

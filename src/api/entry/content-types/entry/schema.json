@@ -1,0 +1,45 @@
+{
+  "kind": "collectionType",
+  "collectionName": "entries",
+  "info": {
+    "singularName": "entry",
+    "pluralName": "entries",
+    "displayName": "Entry",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "submit_time": {
+      "type": "datetime"
+    },
+    "has_been_checked": {
+      "type": "boolean",
+      "default": false,
+      "required": false
+    },
+    "answers": {
+      "type": "json",
+      "required": true
+    },
+    "scores": {
+      "type": "json"
+    },
+    "events": {
+      "type": "json",
+      "required": false
+    },
+    "ext_id": {
+      "type": "uid",
+      "required": false
+    },
+    "topic": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::topic.topic",
+      "inversedBy": "entries"
+    }
+  }
+}

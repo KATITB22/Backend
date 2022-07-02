@@ -11,8 +11,8 @@ const { validateYupSchemaSync } = require("@strapi/utils");
 
 const schema = yup.object().shape({
     name: yup.string().required(),
-    leaders: yup.array().required(),
-    members: yup.array().required(),
+    leaders: yup.array(yup.number()).required(),
+    members: yup.array(yup.number()).required(),
 });
 
 module.exports = createCoreController("api::group.group", ({ strapi }) => ({
@@ -71,8 +71,8 @@ module.exports = createCoreController("api::group.group", ({ strapi }) => ({
             },
             where: { ext_id: id },
         });
-        entity.members = entity.members.map((each) => each.username);
-        entity.leaders = entity.leaders.map((each) => each.username);
+        entity.members = entity.members.map((each) => +each.username);
+        entity.leaders = entity.leaders.map((each) => +each.username);
 
         return entity;
     },

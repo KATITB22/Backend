@@ -38,6 +38,12 @@
       "type": "boolean",
       "default": false,
       "required": true
+    },
+    "entries": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::entry.entry",
+      "mappedBy": "topic"
     }
   }
 }

@@ -29,7 +29,13 @@ module.exports = createCoreController("api::event.event", ({ strapi }) => ({
     async findMinified() {
         const entities = await strapi.db.query("api::event.event").findMany({
             orderBy: ["attendance_start"],
-            select: ["title", "attendance_start", "attendance_end", "ext_id"],
+            select: [
+                "title",
+                "attendance_start",
+                "attendance_end",
+                "ext_id",
+                "attendance_type",
+            ],
         });
         const result = Array.isArray(entities)
             ? entities.map((each) => ({
@@ -37,6 +43,7 @@ module.exports = createCoreController("api::event.event", ({ strapi }) => ({
                   title: each.title,
                   start: each.attendance_start,
                   end: each.attendance_end,
+                  type: each.attendance_type,
               }))
             : [];
         return {
@@ -91,7 +98,7 @@ module.exports = createCoreController("api::event.event", ({ strapi }) => ({
             attendance_end = new Date(),
             attendance_type,
         } = ctx.request.body;
-        
+
         const entity = await strapi.db.query("api::event.event").update({
             where: { ext_id: id },
             data: {
