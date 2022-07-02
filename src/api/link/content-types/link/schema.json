@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "links",
+  "info": {
+    "singularName": "link",
+    "pluralName": "links",
+    "displayName": "Link"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "url": {
+      "type": "string",
+      "required": true
+    },
+    "display_text": {
+      "type": "string",
+      "required": true
+    },
+    "link_group": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::link-group.link-group",
+      "inversedBy": "links"
+    }
+  }
+}

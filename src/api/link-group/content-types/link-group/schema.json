@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "link_groups",
+  "info": {
+    "singularName": "link-group",
+    "pluralName": "link-groups",
+    "displayName": "LinkGroup"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "slug": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "regex": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "links": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::link.link",
+      "mappedBy": "link_group"
+    }
+  }
+}

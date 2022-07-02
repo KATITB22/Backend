@@ -22,7 +22,7 @@
     },
     "answers": {
       "type": "json",
-      "required": true
+      "required": false
     },
     "scores": {
       "type": "json"
