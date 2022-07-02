@@ -14,7 +14,7 @@ module.exports = {
         {
             method: "GET",
             handler: "entry.getEntry",
-            path: "/entry/:entryId",
+            path: "/entry/:topicId/:entryId",
             config: {
                 policies: [],
                 middlewares: [],

@@ -9,9 +9,14 @@ const { createCoreController } = require("@strapi/strapi").factories;
 module.exports = createCoreController(
     "api::entry.entry",
     ({ strapi }) => ({
-        async create() {
+        async create(ctx) {
             const { topicId } = ctx.params;
             const { username } = ctx.state.user;
+
+            const topic = await strapi.db.query("api::topic.topic").findOne({
+                where: { ext_id: topicId },
+                select: ["id"],
+            });
 
             const user = await strapi.db
                 .query("plugin::users-permissions.user")
@@ -19,12 +24,15 @@ module.exports = createCoreController(
 
             const entity = await strapi.db.query("api::entry.entry").create({
                 data: {
-                    topic: topicId,
+                    topic: topic.id,
                     user: user.id,
                     answers: {},
                     scores: {},
                     events: {},
                     has_been_checked: false
+                },
+                populate: {
+                    topic: true
                 }
             })
 
@@ -32,7 +40,7 @@ module.exports = createCoreController(
         },
 
         async getEntry(ctx) {
-            const { entryId } = ctx.params;
+            const { topicId, entryId } = ctx.params;
             const { username } = ctx.state.user;
 
             const entity = await strapi.db.query("api::entry.entry").findOne({
@@ -56,8 +64,27 @@ module.exports = createCoreController(
             if (entity) {
                 return entity;
             } else {
+                const topic = await strapi.db.query("api::topic.topic").findOne({
+                    where: { ext_id: topicId },
+                    select: ["id"],
+                });
+    
+                const user = await strapi.db
+                    .query("plugin::users-permissions.user")
+                    .findOne({ where: { username: username }, select: ["id"] });
+    
                 const entity = await strapi.db.query("api::entry.entry").create({
-                    data: {}
+                    data: {
+                        topic: topic.id,
+                        user: user.id,
+                        answers: {},
+                        scores: {},
+                        events: {},
+                        has_been_checked: false
+                    },
+                    populate: {
+                        topic: true
+                    }
                 })
     
                 return entity
