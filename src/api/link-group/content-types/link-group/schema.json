@@ -4,7 +4,8 @@
   "info": {
     "singularName": "link-group",
     "pluralName": "link-groups",
-    "displayName": "LinkGroup"
+    "displayName": "LinkGroup",
+    "description": ""
   },
   "options": {
     "draftAndPublish": false
@@ -22,6 +23,11 @@
       "relation": "oneToMany",
       "target": "api::link.link",
       "mappedBy": "link_group"
+    },
+    "released": {
+      "type": "boolean",
+      "default": false,
+      "required": false
     }
   }
 }

@@ -1,9 +1,29 @@
-'use strict';
+"use strict";
 
 /**
  *  link-group controller
  */
 
-const { createCoreController } = require('@strapi/strapi').factories;
+const { createCoreController } = require("@strapi/strapi").factories;
 
-module.exports = createCoreController('api::link-group.link-group');
+module.exports = createCoreController(
+    "api::link-group.link-group",
+    ({ strapi }) => ({
+        async findOne(ctx) {
+            const { id } = ctx.params;
+
+            const entity = await strapi.db
+                .query("api::link-group.link-group")
+                .findOne({
+                    populate: {
+                        links: {
+                            select: ["url", "display_text"],
+                        },
+                    },
+                    where: { slug: id, released: true },
+                });
+
+            return entity;
+        },
+    })
+);
