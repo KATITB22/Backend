@@ -56,7 +56,7 @@ module.exports = createCoreController("api::event.event", ({ strapi }) => ({
     async delete(ctx) {
         const { id } = ctx.params;
 
-        const entity = await strapi.db.query("api::event.event").findOne({
+        const entity = await strapi.db.query("api::event.event").delete({
             where: { ext_id: id },
         });
         return entity;
@@ -92,7 +92,7 @@ module.exports = createCoreController("api::event.event", ({ strapi }) => ({
             attendance_type,
         } = ctx.request.body;
 
-        const entity = await strapi.db.query("api::topic.topic").create({
+        const entity = await strapi.db.query("api::event.event").update({
             where: { ext_id: id },
             data: {
                 title,
