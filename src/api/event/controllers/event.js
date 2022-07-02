@@ -26,7 +26,7 @@ const createSchema = yup.object().shape({
 });
 
 module.exports = createCoreController("api::event.event", ({ strapi }) => ({
-    async find() {
+    async findMinified() {
         const entities = await strapi.db.query("api::event.event").findMany({
             orderBy: ["attendance_start"],
             select: ["title", "attendance_start", "attendance_end", "ext_id"],
@@ -91,7 +91,7 @@ module.exports = createCoreController("api::event.event", ({ strapi }) => ({
             attendance_end = new Date(),
             attendance_type,
         } = ctx.request.body;
-
+        
         const entity = await strapi.db.query("api::event.event").update({
             where: { ext_id: id },
             data: {

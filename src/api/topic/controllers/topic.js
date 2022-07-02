@@ -62,7 +62,7 @@ module.exports = createCoreController("api::topic.topic", {
         const { id } = ctx.params;
         const { title, start, end, score_released = false } = ctx.request.body;
 
-        const entity = await strapi.db.query("api::topic.topic").create({
+        const entity = await strapi.db.query("api::topic.topic").update({
             where: { ext_id: id },
             data: {
                 title,
