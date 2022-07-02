@@ -28,6 +28,10 @@
       "type": "boolean",
       "default": false,
       "required": false
+    },
+    "section": {
+      "type": "string",
+      "required": true
     }
   }
 }
