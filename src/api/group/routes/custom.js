@@ -20,5 +20,14 @@ module.exports = {
                 middlewares: [],
             },
         },
+        {
+            method: "GET",
+            handler: "group.findOneWithName",
+            path: "/groups/:id/with-name",
+            config: {
+                policies: [],
+                middlewares: [],
+            },
+        },
     ],
 };
