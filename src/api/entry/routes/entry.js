@@ -1,9 +1,11 @@
-'use strict';
+"use strict";
 
 /**
  * entry router.
  */
 
-const { createCoreRouter } = require('@strapi/strapi').factories;
+const { createCoreRouter } = require("@strapi/strapi").factories;
 
-module.exports = createCoreRouter('api::entry.entry');
+module.exports = createCoreRouter("api::entry.entry", {
+    only: [],
+});

@@ -4,8 +4,17 @@ module.exports = {
     routes: [
         {
             method: "POST",
-            handler: "entry.create",
-            path: "/entry/:topicId",
+            handler: "entry.findOrCreate",
+            path: "/entries/:topicId",
+            config: {
+                policies: [],
+                middlewares: [],
+            },
+        },
+        {
+            method: "GET",
+            handler: "entry.getEntryByTopic",
+            path: "/entries/:topicId",
             config: {
                 policies: [],
                 middlewares: [],
@@ -14,7 +23,7 @@ module.exports = {
         {
             method: "GET",
             handler: "entry.getEntry",
-            path: "/entry/:topicId/:entryId",
+            path: "/entries/:entryId/entry",
             config: {
                 policies: [],
                 middlewares: [],
@@ -23,7 +32,7 @@ module.exports = {
         {
             method: "PUT",
             handler: "entry.putScore",
-            path: "/entry/score/:entryId",
+            path: "/entries/:entryId/score",
             config: {
                 policies: [],
                 middlewares: [],
@@ -32,7 +41,7 @@ module.exports = {
         {
             method: "PUT",
             handler: "entry.putAnswer",
-            path: "/entry/answer/:entryId",
+            path: "/entries/:entryId/answer",
             config: {
                 policies: [],
                 middlewares: [],
@@ -41,7 +50,16 @@ module.exports = {
         {
             method: "POST",
             handler: "entry.submitEntry",
-            path: "/entry/submit/:entryId",
+            path: "/entries/:entryId/submit",
+            config: {
+                policies: [],
+                middlewares: [],
+            },
+        },
+        {
+            method: "POST",
+            handler: "entry.editEntry",
+            path: "/entries/:entryId/edit",
             config: {
                 policies: [],
                 middlewares: [],
