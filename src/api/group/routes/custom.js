@@ -29,5 +29,23 @@ module.exports = {
                 middlewares: [],
             },
         },
+        {
+            method: "GET",
+            handler: "group.getMyUser",
+            path: "/users/my-account",
+            config: {
+                policies: [],
+                middlewares: [],
+            },
+        },
+        {
+            method: "POST",
+            handler: "group.updateMyUser",
+            path: "/users/my-account",
+            config: {
+                policies: [],
+                middlewares: [],
+            },
+        },
     ],
 };

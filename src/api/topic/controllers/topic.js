@@ -85,6 +85,10 @@ module.exports = createCoreController("api::topic.topic", ({ strapi }) => ({
             populate: ["questions"],
             where: { ext_id: id },
         });
+
+        if (new Date() < entity.start) {
+            entity.questions = [];
+        }
         traverseObject(entity.questions, (x) => {
             if (!x["private_metadata"]) return;
 

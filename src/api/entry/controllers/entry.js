@@ -28,9 +28,14 @@ module.exports = createCoreController("api::entry.entry", ({ strapi }) => ({
 
         const topic = await strapi.db.query("api::topic.topic").findOne({
             where: { ext_id: topicId },
-            select: ["id"],
+            select: ["id", "start"],
+            populate: ["questions"],
         });
         if (!topic) return null;
+
+        if (new Date() < topic.start) {
+            return ctx.badRequest("not started yet");
+        }
 
         const user = await strapi.db
             .query("plugin::users-permissions.user")
@@ -39,7 +44,7 @@ module.exports = createCoreController("api::entry.entry", ({ strapi }) => ({
         if (!user) return null;
 
         var entity = await strapi.db.query("api::entry.entry").findOne({
-            data: {
+            where: {
                 topic: topic.id,
                 user: user.id,
             },
@@ -52,13 +57,11 @@ module.exports = createCoreController("api::entry.entry", ({ strapi }) => ({
                     topic: topic.id,
                     user: user.id,
                 },
-                populate: {
-                    topic: {
-                        populate: ["questions"],
-                    },
-                },
+                populate: ["topic"],
             });
         }
+
+        entity.topic.questions = topic.questions;
 
         traverseObject(entity.topic, (x) => {
             if (!x["private_metadata"]) return;

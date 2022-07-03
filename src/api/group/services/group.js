@@ -80,7 +80,9 @@ module.exports = createCoreService("api::group.group", ({ strapi }) => ({
         const groups = await strapi.db.query("api::group.group").findMany({
             populate: ["members"],
             where: {
-                id: groupId,
+                id: {
+                    $in: groupId,
+                },
             },
         });
         if (!groups) {

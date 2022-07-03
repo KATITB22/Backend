@@ -106,6 +106,12 @@
       "type": "email",
       "default": "unknown@gmail.com",
       "required": true
+    },
+    "entries": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::entry.entry",
+      "mappedBy": "user"
     }
   }
 }

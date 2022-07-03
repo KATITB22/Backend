@@ -30,6 +30,13 @@ module.exports = createCoreController(
             if (event.attendance_type != "GroupLeader") {
                 return ctx.badRequest("wrong attendance method");
             }
+            if (new Date() < event.attendance_start) {
+                return ctx.badRequest("attendance not opened");
+            }
+            if (new Date() > event.attendance_end) {
+                return ctx.badRequest("attendance has been closed");
+            }
+
             const compabilityNimList = _.concat(attend, not_attend);
             const nim = +ctx.state.user.username;
             const compatibleListPromise = compabilityNimList.map((each) =>
@@ -67,12 +74,20 @@ module.exports = createCoreController(
 
             const event = await strapi.db.query("api::event.event").findOne({
                 where: { ext_id: eventId },
-                select: ["id", "attendance_type"],
+                select: ["id", "attendance_type", "attendance_start"],
             });
             if (!event) return null;
             if (event.attendance_type != "Self") {
                 return ctx.badRequest("wrong attendance method");
             }
+
+            if (new Date() < event.attendance_start) {
+                return ctx.badRequest("attendance not opened");
+            }
+            if (new Date() > event.attendance_end) {
+                return ctx.badRequest("attendance has been closed");
+            }
+
             const nim = +ctx.state.user.username;
             const attendance = await strapi
                 .service("api::attendance.attendance")

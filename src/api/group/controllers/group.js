@@ -15,7 +15,73 @@ const schema = yup.object().shape({
     members: yup.array(yup.number()).required(),
 });
 
+const userUpdateSchema = yup.object().shape({
+    campus: yup
+        .string()
+        .oneOf(["Ganesha", "Jatinangor", "Cirebon", "-"])
+        .required(),
+    sex: yup.string().oneOf(["Male", "Female", "Unknown"]).required(),
+    faculty: yup
+        .string()
+        .oneOf([
+            "FITB",
+            "FMIPA",
+            "FSRD",
+            "FTI",
+            "FTMD",
+            "FTTM",
+            "FTSL",
+            "SAPPK",
+            "SBM",
+            "SF",
+            "SITH",
+            "STEI",
+            "-",
+        ])
+        .required(),
+});
+
 module.exports = createCoreController("api::group.group", ({ strapi }) => ({
+    async getMyUser(ctx) {
+        const { user } = ctx.state;
+
+        if (!user) return null;
+
+        const entity = await strapi.db
+            .query("plugin::users-permissions.user")
+            .findOne({
+                where: { id: user.id },
+                select: ["username", "name", "faculty", "campus", "sex"],
+                populate: {
+                    role: {
+                        select: ["name"],
+                    },
+                },
+            });
+        entity.role = entity.role.name;
+        return entity;
+    },
+
+    async updateMyUser(ctx) {
+        validateYupSchemaSync(userUpdateSchema)(ctx.request.body);
+        const { user } = ctx.state;
+        const { campus, sex, faculty } = ctx.request.body;
+
+        if (!user) return null;
+
+        const entity = await strapi.db
+            .query("plugin::users-permissions.user")
+            .update({
+                where: { id: user.id },
+                data: {
+                    campus,
+                    sex,
+                    faculty,
+                },
+            });
+        return entity;
+    },
+
     async deleteAll() {
         return await strapi.service("api::group.group").deleteAll();
     },
