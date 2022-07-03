@@ -17,12 +17,17 @@ module.exports = createCoreController(
                 .findOne({
                     populate: {
                         links: {
-                            select: ["url", "display_text"],
+                            select: ["url", "display_text", "priority"],
                         },
                     },
                     where: { slug: id, released: true },
                 });
 
+            entity.links.sort((a, b) => {
+                if (!a) a = 0;
+                if (!b) b = 0;
+                return b.priority - a.priority;
+            });
             return entity;
         },
     })

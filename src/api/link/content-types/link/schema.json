@@ -4,7 +4,8 @@
   "info": {
     "singularName": "link",
     "pluralName": "links",
-    "displayName": "Link"
+    "displayName": "Link",
+    "description": ""
   },
   "options": {
     "draftAndPublish": false
@@ -24,6 +25,10 @@
       "relation": "manyToOne",
       "target": "api::link-group.link-group",
       "inversedBy": "links"
+    },
+    "priority": {
+      "default": 1,
+      "type": "integer"
     }
   }
 }
