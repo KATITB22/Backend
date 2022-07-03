@@ -40,6 +40,11 @@
       "relation": "manyToOne",
       "target": "api::topic.topic",
       "inversedBy": "entries"
+    },
+    "user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
     }
   }
 }
