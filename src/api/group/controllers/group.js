@@ -179,6 +179,41 @@ module.exports = createCoreController("api::group.group", ({ strapi }) => ({
         return await strapi.service("api::group.group").deleteAll();
     },
 
+    async getMyGroup(ctx) {
+        const { user } = ctx.state;
+
+        if (!user) return null;
+
+        const { username } = user;
+
+        const entity = await strapi.db.query("api::group.group").findOne({
+            populate: {
+                members: {
+                    select: ["username", "name", "faculty", "campus"],
+                },
+                leaders: {
+                    select: ["username", "name", "faculty", "campus"],
+                },
+            },
+            where: {
+                $or: [
+                    {
+                        members: {
+                            username: username
+                        }
+                    },
+                    {
+                        leaders: {
+                            username: username
+                        }
+                    }
+                ]
+            }
+        })
+
+        return entity;
+    },
+
     async createGroup(ctx) {
         validateYupSchemaSync(schema)(ctx.request.body);
         const { name, leaders = [], members = [] } = ctx.request.body;
