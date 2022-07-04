@@ -81,7 +81,7 @@ module.exports = createCoreController("api::group.group", ({ strapi }) => ({
                 .findOne({ where: { name: roleName } });
 
             if (!role) {
-                throw new ApplicationError('Impossible to find the default role');
+                return ctx.badRequest('Role not found',  {role: params.role})
             }
 
             params.role = role.id;
