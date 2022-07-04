@@ -7,13 +7,25 @@
 const { createCoreController } = require("@strapi/strapi").factories;
 const _ = require("lodash");
 const yup = require("yup");
-const { validateYupSchemaSync } = require("@strapi/utils");
+const { validateYupSchemaSync, sanitize } = require("@strapi/utils");
+
+const getService = name => {
+    return strapi.plugin('users-permissions').service(name);
+};
+
+const sanitizeUser = (user, ctx) => {
+    const { auth } = ctx.state;
+    const userSchema = strapi.getModel('plugin::users-permissions.user');
+  
+    return sanitize.contentAPI.output(user, userSchema, { auth });
+};
 
 const schema = yup.object().shape({
     name: yup.string().required(),
     leaders: yup.array(yup.number()).required(),
     members: yup.array(yup.number()).required(),
 });
+
 
 const userUpdateSchema = yup.object().shape({
     campus: yup
@@ -42,6 +54,63 @@ const userUpdateSchema = yup.object().shape({
 });
 
 module.exports = createCoreController("api::group.group", ({ strapi }) => ({
+    async registerUserBulk(ctx) {
+        const { data } = ctx.request.body
+
+        let response = []
+
+        for (let value of data)  {
+            const { username, name, roleName, faculty, campus, sex, password } = value
+
+
+            let params = {}
+            let userRes
+
+            params.username = username
+            params.name = name
+            params.faculty = faculty
+            params.campus = campus
+            params.sex = sex
+            params.password = password
+            params.email = "unknown@gmail.com"
+            params.provider = "local"
+
+            //const roleName dari body
+            const role = await strapi
+                .query('plugin::users-permissions.role')
+                .findOne({ where: { name: roleName } });
+
+            if (!role) {
+                return ctx.badRequest('Role not found',  {role: params.role})
+            }
+
+            params.role = role.id;
+
+            try {
+                const user = await getService('user').add(params);
+          
+                const sanitizedUser = await sanitizeUser(user, ctx);
+
+                userRes = sanitizedUser
+          
+            } catch (err) {
+                if (_.includes(err.message, 'username')) {
+                    return ctx.badRequest('Username is taken',  {username: params.username})
+                } else if (_.includes(err.message, 'email')) {
+                    return ctx.badRequest('Email already taken',  {email: params.email})
+                } else {
+                    return ctx.badRequest(err.message, {params: params})
+                }
+            }
+
+            response.push(userRes)
+        }
+
+        return ctx.send({
+            data: response
+        })
+    },
+
     async getMyUser(ctx) {
         const { user } = ctx.state;
 

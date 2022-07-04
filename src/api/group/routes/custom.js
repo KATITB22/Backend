@@ -40,6 +40,15 @@ module.exports = {
         },
         {
             method: "POST",
+            handler: "group.registerUserBulk",
+            path: "/users/createBulk",
+            config: {
+                policies: [],
+                middlewares: [],
+            },
+        },
+        {
+            method: "POST",
             handler: "group.updateMyUser",
             path: "/users/my-account",
             config: {
