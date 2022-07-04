@@ -9,14 +9,14 @@ const _ = require("lodash");
 const yup = require("yup");
 const { validateYupSchemaSync, sanitize } = require("@strapi/utils");
 
-const getService = name => {
-    return strapi.plugin('users-permissions').service(name);
+const getService = (name) => {
+    return strapi.plugin("users-permissions").service(name);
 };
 
 const sanitizeUser = (user, ctx) => {
     const { auth } = ctx.state;
-    const userSchema = strapi.getModel('plugin::users-permissions.user');
-  
+    const userSchema = strapi.getModel("plugin::users-permissions.user");
+
     return sanitize.contentAPI.output(user, userSchema, { auth });
 };
 
@@ -25,7 +25,6 @@ const schema = yup.object().shape({
     leaders: yup.array(yup.number()).required(),
     members: yup.array(yup.number()).required(),
 });
-
 
 const userUpdateSchema = yup.object().shape({
     campus: yup
@@ -51,64 +50,69 @@ const userUpdateSchema = yup.object().shape({
             "-",
         ])
         .required(),
+    password: yup.string().optional(),
+    new_password: yup.string().optional(),
 });
 
 module.exports = createCoreController("api::group.group", ({ strapi }) => ({
     async registerUserBulk(ctx) {
-        const { data } = ctx.request.body
+        const { data } = ctx.request.body;
 
-        let response = []
+        let response = [];
 
-        for (let value of data)  {
-            const { username, name, roleName, faculty, campus, sex, password } = value
+        for (let value of data) {
+            const { username, name, roleName, faculty, campus, sex, password } =
+                value;
 
+            let params = {};
+            let userRes;
 
-            let params = {}
-            let userRes
-
-            params.username = username
-            params.name = name
-            params.faculty = faculty
-            params.campus = campus
-            params.sex = sex
-            params.password = password
-            params.email = "unknown@gmail.com"
-            params.provider = "local"
+            params.username = username;
+            params.name = name;
+            params.faculty = faculty;
+            params.campus = campus;
+            params.sex = sex;
+            params.password = password;
+            params.email = "unknown@gmail.com";
+            params.provider = "local";
 
             //const roleName dari body
             const role = await strapi
-                .query('plugin::users-permissions.role')
+                .query("plugin::users-permissions.role")
                 .findOne({ where: { name: roleName } });
 
             if (!role) {
-                return ctx.badRequest('Role not found',  {role: params.role})
+                return ctx.badRequest("Role not found", { role: params.role });
             }
 
             params.role = role.id;
 
             try {
-                const user = await getService('user').add(params);
-          
+                const user = await getService("user").add(params);
+
                 const sanitizedUser = await sanitizeUser(user, ctx);
 
-                userRes = sanitizedUser
-          
+                userRes = sanitizedUser;
             } catch (err) {
-                if (_.includes(err.message, 'username')) {
-                    return ctx.badRequest('Username is taken',  {username: params.username})
-                } else if (_.includes(err.message, 'email')) {
-                    return ctx.badRequest('Email already taken',  {email: params.email})
+                if (_.includes(err.message, "username")) {
+                    return ctx.badRequest("Username is taken", {
+                        username: params.username,
+                    });
+                } else if (_.includes(err.message, "email")) {
+                    return ctx.badRequest("Email already taken", {
+                        email: params.email,
+                    });
                 } else {
-                    return ctx.badRequest(err.message, {params: params})
+                    return ctx.badRequest(err.message, { params: params });
                 }
             }
 
-            response.push(userRes)
+            response.push(userRes);
         }
 
         return ctx.send({
-            data: response
-        })
+            data: response,
+        });
     },
 
     async getMyUser(ctx) {
@@ -134,7 +138,13 @@ module.exports = createCoreController("api::group.group", ({ strapi }) => ({
     async updateMyUser(ctx) {
         validateYupSchemaSync(userUpdateSchema)(ctx.request.body);
         const { user } = ctx.state;
-        const { campus, sex, faculty } = ctx.request.body;
+        const {
+            campus,
+            sex,
+            faculty,
+            password = "",
+            new_password = "",
+        } = ctx.request.body;
 
         if (!user) return null;
 
@@ -148,7 +158,21 @@ module.exports = createCoreController("api::group.group", ({ strapi }) => ({
                     faculty,
                 },
             });
-        return entity;
+        if (password && new_password) {
+            const validPassword = await getService("user").validatePassword(
+                password,
+                user.password
+            );
+            if (!validPassword) {
+                return ctx.badRequest("Wrong old password!");
+            }
+
+            await getService("user").edit(entity.id, {
+                password: new_password,
+            });
+        }
+        const sanitizedUser = await sanitizeUser(entity, ctx);
+        return sanitizedUser;
     },
 
     async deleteAll() {

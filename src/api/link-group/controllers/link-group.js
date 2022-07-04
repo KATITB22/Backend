@@ -23,11 +23,13 @@ module.exports = createCoreController(
                     where: { slug: id, released: true },
                 });
 
-            entity.links.sort((a, b) => {
-                if (!a) a = 0;
-                if (!b) b = 0;
-                return b.priority - a.priority;
-            });
+            if (entity.links) {
+                entity.links.sort((a, b) => {
+                    if (!a) a = 0;
+                    if (!b) b = 0;
+                    return b.priority - a.priority;
+                });
+            }
             return entity;
         },
     })
