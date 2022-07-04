@@ -143,7 +143,7 @@ module.exports = createCoreController("api::entry.entry", ({ strapi }) => ({
 
     async putScore(ctx) {
         const { entryId } = ctx.params;
-        const { scores } = ctx.request.body;
+        const { scores = {} } = ctx.request.body;
 
         const entity = await strapi.db.query("api::entry.entry").findOne({
             where: {
@@ -192,7 +192,7 @@ module.exports = createCoreController("api::entry.entry", ({ strapi }) => ({
     async putAnswer(ctx) {
         const { entryId } = ctx.params;
         const { username } = ctx.state.user;
-        const { answers } = ctx.request.body;
+        const { answers = {} } = ctx.request.body;
 
         const entity = await strapi.db.query("api::entry.entry").findOne({
             where: {
@@ -216,7 +216,7 @@ module.exports = createCoreController("api::entry.entry", ({ strapi }) => ({
             (each) => each.action === "Save"
         );
         const events = entity.events.filter((each) => each.action !== "Save");
-        if (saveEvents.length >= 3) {
+        if (saveEvents.length >= 5) {
             entity.events = events.concat(saveEvents.slice(1));
         }
         entity.events.push({ action: "Save", timestamp: new Date(), answers });
@@ -251,7 +251,7 @@ module.exports = createCoreController("api::entry.entry", ({ strapi }) => ({
     async submitEntry(ctx) {
         const { entryId } = ctx.params;
         const { username } = ctx.state.user;
-        const { answers } = ctx.request.body;
+        const { answers = {} } = ctx.request.body;
 
         const entity = await strapi.db.query("api::entry.entry").findOne({
             where: {
