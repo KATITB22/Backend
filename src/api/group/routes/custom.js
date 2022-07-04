@@ -22,6 +22,15 @@ module.exports = {
         },
         {
             method: "GET",
+            handler: "group.getMyGroup",
+            path: "/groups/me",
+            config: {
+                policies: [],
+                middlewares: [],
+            },
+        },
+        {
+            method: "GET",
             handler: "group.findOneWithName",
             path: "/groups/:id/with-name",
             config: {
