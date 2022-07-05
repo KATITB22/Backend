@@ -1,5 +1,5 @@
 "use strict";
-
+const X = require("koa2-ratelimit");
 module.exports = {
     /**
      * An asynchronous register function that runs before
@@ -7,7 +7,12 @@ module.exports = {
      *
      * This gives you an opportunity to extend code.
      */
-    register(/*{ strapi }*/) {},
+    register({ strapi }) {
+        strapi.config.set("plugin.users-permissions.ratelimit", {
+            max: 250,
+            interval: 1000,
+        });
+    },
 
     /**
      * An asynchronous bootstrap function that runs before
