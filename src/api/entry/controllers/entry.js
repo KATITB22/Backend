@@ -74,7 +74,7 @@ module.exports = createCoreController("api::entry.entry", ({ strapi }) => ({
 
     async getEntryByTopic(ctx) {
         const { topicId } = ctx.params;
-        const { page = 1, pageSize = 10 } = ctx.query;
+        const { page = 1, pageSize = 10, isSubmitted = true } = ctx.query;
         if (page <= 0) return null;
 
         const topic = await strapi.db.query("api::topic.topic").findOne({
@@ -100,7 +100,7 @@ module.exports = createCoreController("api::entry.entry", ({ strapi }) => ({
             where: {
                 $and: [
                     { topic: topic.id },
-                    { submit_time: { $notNull: true } },
+                    { submit_time: { $notNull: isSubmitted } },
                 ],
             },
             select: ["id", "submit_time", "has_been_checked"],
@@ -116,7 +116,7 @@ module.exports = createCoreController("api::entry.entry", ({ strapi }) => ({
         return {
             data: entity,
             metadata: {
-                page,
+                page: +page,
                 pageSize,
                 total: count,
                 pageCount,
@@ -133,7 +133,10 @@ module.exports = createCoreController("api::entry.entry", ({ strapi }) => ({
             },
             populate: {
                 user: {
-                    select: ["username", "name"],
+                    select: ["username", "name", "faculty", "campus", "sex"],
+                },
+                topic: {
+                    populate: ["questions"],
                 },
             },
         });
@@ -150,11 +153,6 @@ module.exports = createCoreController("api::entry.entry", ({ strapi }) => ({
                 $and: [
                     {
                         ext_id: entryId,
-                    },
-                    {
-                        user: {
-                            username: username,
-                        },
                     },
                 ],
             },
