@@ -27,6 +27,31 @@ module.exports = createCoreService("api::group.group", ({ strapi }) => ({
         return ids.map((each) => (each ? each.id : each));
     },
 
+    async getFirstGroupNameByNim(nim) {
+        assert.number(nim);
+
+        const user = await strapi.db
+            .query("plugin::users-permissions.user")
+            .findOne({
+                where: { username: nim },
+                select: ["id"],
+            });
+
+        if (!user) return "?";
+
+        const groups = await strapi.db.query("api::group.group").findOne({
+            where: {
+                members: user.id,
+            },
+            select: ["name"],
+            limit: 1,
+        });
+
+        if (!groups) return "?";
+
+        return groups.name;
+    },
+
     async getGroupMembersByNim(nim) {
         assert.number(nim);
 

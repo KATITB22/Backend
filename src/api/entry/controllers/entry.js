@@ -4,6 +4,7 @@
  *  entry controller
  */
 
+const _ = require("lodash");
 const { createCoreController } = require("@strapi/strapi").factories;
 const isObject = (val) => val instanceof Object;
 const traverseObject = (data, fn) => {
@@ -72,6 +73,101 @@ module.exports = createCoreController("api::entry.entry", ({ strapi }) => ({
         return entity;
     },
 
+    async getEntryByTopicForMyGroup(ctx) {
+        const { topicId } = ctx.params;
+        const { page = 1, pageSize = 10, isSubmitted = true } = ctx.query;
+        if (page <= 0) return null;
+
+        const topic = await strapi.db.query("api::topic.topic").findOne({
+            where: { ext_id: topicId },
+            select: ["id"],
+        });
+        if (!topic) return null;
+
+        const nim = +ctx.state.user.username;
+
+        const groups = await strapi
+            .service("api::group.group")
+            .getGroupLeadersByNim(nim);
+        if (_.isEmpty(groups)) return null;
+
+        const groupObject = await strapi
+            .service("api::group.group")
+            .getAllMembersByGroupsID(groups);
+
+        const [, count] = await strapi.db
+            .query("api::entry.entry")
+            .findWithCount({
+                where: {
+                    $and: [
+                        { topic: topic.id },
+                        { submit_time: { $notNull: true } },
+                        {
+                            user: {
+                                id: {
+                                    $in: groupObject.userIds,
+                                },
+                            },
+                        },
+                    ],
+                },
+                select: ["id"],
+            });
+
+        const entity = await strapi.db.query("api::entry.entry").findMany({
+            limit: pageSize,
+            offset: (page - 1) * pageSize,
+            orderBy: { submit_time: "asc" },
+            where: {
+                $and: [
+                    { topic: topic.id },
+                    { submit_time: { $notNull: isSubmitted } },
+                    {
+                        user: {
+                            id: {
+                                $in: groupObject.userIds,
+                            },
+                        },
+                    },
+                ],
+            },
+            select: ["ext_id", "submit_time", "has_been_checked"],
+            populate: {
+                user: {
+                    select: ["username", "name"],
+                },
+            },
+        });
+
+        const pageCount = Math.ceil(count / pageSize);
+        const nimGroupMap = {};
+        Object.keys(groupObject.result).forEach((groupName) => {
+            groupObject.result[groupName].forEach((eachUser) => {
+                nimGroupMap[eachUser.nim] = groupName;
+            });
+        });
+
+        const translatedEntity = entity.map((each) => {
+            const u = each.user;
+            delete each.user;
+            return {
+                ...each,
+                ...u,
+                group: nimGroupMap[+u.username],
+            };
+        });
+
+        return {
+            data: translatedEntity,
+            metadata: {
+                page: +page,
+                pageSize,
+                total: count,
+                pageCount,
+            },
+        };
+    },
+
     async getEntryByTopic(ctx) {
         const { topicId } = ctx.params;
         const { page = 1, pageSize = 10, isSubmitted = true } = ctx.query;
@@ -103,7 +199,7 @@ module.exports = createCoreController("api::entry.entry", ({ strapi }) => ({
                     { submit_time: { $notNull: isSubmitted } },
                 ],
             },
-            select: ["id", "submit_time", "has_been_checked"],
+            select: ["ext_id", "submit_time", "has_been_checked"],
             populate: {
                 user: {
                     select: ["username", "name"],
@@ -111,10 +207,32 @@ module.exports = createCoreController("api::entry.entry", ({ strapi }) => ({
             },
         });
 
+        const nimList = [];
+        entity.forEach((each) => {
+            nimList.push(+each.user.username);
+        });
+        const nimGroupMap = {};
+        for (var i = 0; i < nimList.length; i++) {
+            const nim = nimList[i];
+            nimGroupMap[nim] = await strapi
+                .service("api::group.group")
+                .getFirstGroupNameByNim(nim);
+        }
+
         const pageCount = Math.ceil(count / pageSize);
 
+        const translatedEntity = entity.map((each) => {
+            const u = each.user;
+            delete each.user;
+            return {
+                ...each,
+                ...u,
+                group: nimGroupMap[+u.username],
+            };
+        });
+
         return {
-            data: entity,
+            data: translatedEntity,
             metadata: {
                 page: +page,
                 pageSize,
@@ -207,6 +325,9 @@ module.exports = createCoreController("api::entry.entry", ({ strapi }) => ({
             },
             select: ["events"],
         });
+        if (entity.has_been_checked) {
+            return ctx.badRequest("sudah dicek tidak bisa ganti jawaban.");
+        }
         if (entity.events == null) {
             entity.events = [];
         }
@@ -326,6 +447,9 @@ module.exports = createCoreController("api::entry.entry", ({ strapi }) => ({
             },
             select: ["events"],
         });
+        if (entity.has_been_checked) {
+            return ctx.badRequest("sudah dicek tidak bisa unsubmit.");
+        }
         if (!entity.events) {
             entity.events = [];
         }
