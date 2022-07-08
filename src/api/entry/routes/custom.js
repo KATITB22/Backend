@@ -22,6 +22,15 @@ module.exports = {
         },
         {
             method: "GET",
+            handler: "entry.getEntryByTopicForMyGroup",
+            path: "/entries/:topicId/group",
+            config: {
+                policies: [],
+                middlewares: [],
+            },
+        },
+        {
+            method: "GET",
             handler: "entry.getEntry",
             path: "/entries/:entryId/entry",
             config: {
