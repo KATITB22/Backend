@@ -203,6 +203,7 @@ module.exports = createCoreController("api::entry.entry", ({ strapi }) => ({
                 $and: [
                     { topic: topic.id },
                     { submit_time: { $notNull: isSubmitted } },
+                    { has_been_checked: isChecked },
                 ],
             },
             select: ["ext_id", "submit_time", "has_been_checked"],
