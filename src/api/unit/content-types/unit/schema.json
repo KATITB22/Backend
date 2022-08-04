@@ -1,0 +1,50 @@
+{
+  "kind": "collectionType",
+  "collectionName": "units",
+  "info": {
+    "singularName": "unit",
+    "pluralName": "units",
+    "displayName": "Unit",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "ext_id": {
+      "type": "uid",
+      "required": false
+    },
+    "name": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "maxLength": 30
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "link": {
+      "type": "string"
+    },
+    "video": {
+      "type": "string"
+    },
+    "rundown": {
+      "type": "json"
+    },
+    "description": {
+      "type": "richtext"
+    },
+    "visitors": {
+      "type": "integer",
+      "default": 0
+    }
+  }
+}
