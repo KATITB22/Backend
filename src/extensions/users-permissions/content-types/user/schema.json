@@ -112,6 +112,12 @@
       "relation": "oneToMany",
       "target": "api::entry.entry",
       "mappedBy": "user"
+    },
+    "insights": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::insight.insight",
+      "mappedBy": "user"
     }
   }
 }
