@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "ohus",
+  "info": {
+    "singularName": "ohu",
+    "pluralName": "ohus",
+    "displayName": "OHU",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "score": {
+      "type": "integer",
+      "default": 0,
+      "min": 0
+    },
+    "user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "ohu"
+    }
+  }
+}

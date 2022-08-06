@@ -112,6 +112,12 @@
       "relation": "oneToMany",
       "target": "api::entry.entry",
       "mappedBy": "user"
+    },
+    "ohu": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::ohu.ohu",
+      "mappedBy": "user"
     }
   }
 }
