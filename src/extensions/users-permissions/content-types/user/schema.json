@@ -112,6 +112,11 @@
       "relation": "oneToMany",
       "target": "api::entry.entry",
       "mappedBy": "user"
+    },
+    "score": {
+      "type": "integer",
+      "min": 0,
+      "default": 0
     }
   }
 }

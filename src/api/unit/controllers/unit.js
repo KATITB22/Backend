@@ -39,4 +39,49 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
         });
         return entity;
     },
+
+    async getScore(ctx) {
+        // TODO tambahin filter fakultas?
+        const { page = 1, search = "" } = ctx.query;
+        const [entity, count] = await strapi.db.query('plugin::users-permissions.user').findWithCount({
+            limit: 10,
+            offset: (page - 1) * 10,
+            orderBy: { score: 'desc', username: 'asc' },
+            select: ['username', 'name', 'score'],
+            where: {
+                $or: [
+                    {
+                        username: { $containsi: search }
+                    },
+                    {
+                        name: { $containsi: search }
+                    }
+                ],
+                role: {
+                    name: 'Participant'
+                }
+            }
+        });
+
+        return {
+            data: entity,
+            metadata: {
+                total: count,
+                pageCount: Math.ceil(count / 10)
+            }
+        }
+    },
+
+    async updateScore(ctx) {
+        const { username, score } = ctx.request.body;
+        
+        const entity = await strapi.db.query('plugin::users-permissions.user').update({
+            select: ['username', 'name', 'score'],
+            where: { username },
+            data: { score }
+        });
+        entity.message = 'SUCCESS';
+
+        return entity;
+    }
 }));
