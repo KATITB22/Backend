@@ -44,8 +44,8 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
         // TODO tambahin filter fakultas?
         const { page = 1, search = "" } = ctx.query;
         const [entity, count] = await strapi.db.query('plugin::users-permissions.user').findWithCount({
-            limit: 10,
-            offset: (page - 1) * 10,
+            limit: 5,
+            offset: (page - 1) * 5,
             orderBy: { score: 'desc', username: 'asc' },
             select: ['username', 'name', 'score'],
             where: {
@@ -67,7 +67,7 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
             data: entity,
             metadata: {
                 total: count,
-                pageCount: Math.ceil(count / 10)
+                pageCount: Math.ceil(count / 5)
             }
         }
     },
