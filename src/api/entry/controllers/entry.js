@@ -170,7 +170,12 @@ module.exports = createCoreController("api::entry.entry", ({ strapi }) => ({
 
     async getEntryByTopic(ctx) {
         const { topicId } = ctx.params;
-        const { page = 1, pageSize = 10, isSubmitted = true } = ctx.query;
+        const {
+            page = 1,
+            pageSize = 10,
+            isSubmitted = true,
+            isChecked = false,
+        } = ctx.query;
         if (page <= 0) return null;
 
         const topic = await strapi.db.query("api::topic.topic").findOne({
@@ -185,6 +190,7 @@ module.exports = createCoreController("api::entry.entry", ({ strapi }) => ({
                     $and: [
                         { topic: topic.id },
                         { submit_time: { $notNull: true } },
+                        { has_been_checked: isChecked },
                     ],
                 },
                 select: ["id"],
@@ -197,6 +203,7 @@ module.exports = createCoreController("api::entry.entry", ({ strapi }) => ({
                 $and: [
                     { topic: topic.id },
                     { submit_time: { $notNull: isSubmitted } },
+                    { has_been_checked: isChecked },
                 ],
             },
             select: ["ext_id", "submit_time", "has_been_checked"],
