@@ -22,7 +22,15 @@ module.exports = createCoreController('api::insight.insight', ({ strapi }) => ({
         return createInsight
     },
 
-    async findOne(ctx) {
-        
+    async find(ctx) {
+        const insight = await strapi.db
+            .query('api::insight.insight')
+            .findOne({
+                where: {
+                    user: ctx.state.user.id
+                }
+            })
+
+        return insight
     }
 }));
