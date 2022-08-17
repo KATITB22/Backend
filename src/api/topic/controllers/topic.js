@@ -22,7 +22,7 @@ const questionSchema = yup.object().shape({
             type: yup
                 .string()
                 .required()
-                .oneOf(["ISIAN", "PILIHAN GANDA", "ESSAY"]),
+                .oneOf(["ISIAN", "PILIHAN GANDA", "ESSAY", "SCORING"]),
         }),
     question: yup.string().required(),
     question_no: yup.number().required(),
