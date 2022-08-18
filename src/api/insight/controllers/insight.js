@@ -31,6 +31,12 @@ module.exports = createCoreController('api::insight.insight', ({ strapi }) => ({
                 }
             })
 
+        if (!insight) {
+            return {
+                answer: null
+            }
+        }
+
         return insight
     }
 }));
