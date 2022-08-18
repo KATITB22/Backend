@@ -90,13 +90,18 @@
         "FSRD",
         "FTI",
         "FTMD",
-        "FTTM",
         "FTSL",
+        "FTTM",
+        "FTTM-C",
         "SAPPK",
         "SBM",
         "SF",
         "SITH",
+        "SITH-R",
+        "SITH-S",
         "STEI",
+        "STEI-K",
+        "STEI-R",
         "-"
       ],
       "required": true,
@@ -118,6 +123,11 @@
       "relation": "oneToMany",
       "target": "api::insight.insight",
       "mappedBy": "user"
+    },
+    "score": {
+      "type": "integer",
+      "min": 0,
+      "default": 0
     }
   }
 }
