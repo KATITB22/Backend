@@ -78,7 +78,7 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
                 select: ["username", "name", "score", "faculty"],
                 where: {
                     role: {
-                        name: "Committee",
+                        name: "Participant",
                     },
                     faculty: {
                         $in: filterFaculty,
@@ -97,6 +97,14 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
                         },
                         {
                             hideScoreboard: null,
+                        },
+                    ],
+                    $or: [
+                        {
+                            score: { $gt: 0 },
+                        },
+                        {
+                            score: { $ne: null },
                         },
                     ],
                 },
@@ -123,7 +131,7 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
         const entity = await strapi.db
             .query("plugin::users-permissions.user")
             .update({
-                select: ["username", "name", "score"],
+                select: ["username", "name", "score", "faculty"],
                 where: { username },
                 data: { score },
             });
