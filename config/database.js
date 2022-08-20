@@ -21,7 +21,7 @@ const configFactory =
                 rejectUnauthorized: env.bool("DATABASE_SSL_SELF", false),
             };
         } else {
-            config.connection.debug = false;
+            config.connection.debug = true;
         }
 
         return config;
