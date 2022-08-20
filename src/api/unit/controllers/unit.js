@@ -5,6 +5,26 @@
  */
 
 const { createCoreController } = require("@strapi/strapi").factories;
+const defFaculty = [
+    "FITB",
+    "FMIPA",
+    "FSRD",
+    "FTI",
+    "FTMD",
+    "FTSL",
+    "FTTM",
+    "FTTM-C",
+    "SAPPK",
+    "SBM",
+    "SF",
+    "SITH",
+    "SITH-R",
+    "SITH-S",
+    "STEI",
+    "STEI-K",
+    "STEI-R",
+    "-",
+];
 
 module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
     async findOne(ctx) {
@@ -41,47 +61,74 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
     },
 
     async getScore(ctx) {
-        // TODO tambahin filter fakultas?
-        const { page = 1, search = "", lim = 10 } = ctx.query;
-        const [entity, count] = await strapi.db.query('plugin::users-permissions.user').findWithCount({
-            limit: lim,
-            offset: (page - 1) * lim,
-            orderBy: { score: 'desc', username: 'asc' },
-            select: ['username', 'name', 'score'],
-            where: {
-                $or: [
-                    {
-                        username: { $containsi: search }
+        const {
+            page = 1,
+            search = "",
+            lim = 10,
+            facultys = defFaculty,
+        } = ctx.query;
+        const filterFaculty =
+            facultys.length === 18 ? facultys : facultys.split(",");
+        const [entity, count] = await strapi.db
+            .query("plugin::users-permissions.user")
+            .findWithCount({
+                limit: lim,
+                offset: (page - 1) * lim,
+                orderBy: { score: "desc", username: "asc" },
+                select: ["username", "name", "score", "faculty"],
+                where: {
+                    role: {
+                        name: "Committee",
                     },
-                    {
-                        name: { $containsi: search }
-                    }
-                ],
-                role: {
-                    name: 'Participant'
-                }
-            }
+                    faculty: {
+                        $in: filterFaculty,
+                    },
+                    $or: [
+                        {
+                            username: { $containsi: search },
+                        },
+                        {
+                            name: { $containsi: search },
+                        },
+                    ],
+                    $or: [
+                        {
+                            hideScoreboard: false,
+                        },
+                        {
+                            hideScoreboard: null,
+                        },
+                    ],
+                },
+            });
+        const res = entity.map((item, idx) => {
+            return {
+                rank: (page - 1) * 10 + idx + 1,
+                ...item,
+            };
         });
 
         return {
-            data: entity,
+            data: res,
             metadata: {
                 total: count,
-                pageCount: Math.ceil(count / lim)
-            }
-        }
+                pageCount: Math.ceil(count / lim),
+            },
+        };
     },
 
     async updateScore(ctx) {
         const { username, score } = ctx.request.body;
-        
-        const entity = await strapi.db.query('plugin::users-permissions.user').update({
-            select: ['username', 'name', 'score'],
-            where: { username },
-            data: { score }
-        });
-        entity.message = 'SUCCESS';
+
+        const entity = await strapi.db
+            .query("plugin::users-permissions.user")
+            .update({
+                select: ["username", "name", "score"],
+                where: { username },
+                data: { score },
+            });
+        entity.message = "SUCCESS";
 
         return entity;
-    }
+    },
 }));
