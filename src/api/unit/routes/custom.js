@@ -19,6 +19,15 @@ module.exports = {
                 policies: [],
                 middlewares: [],
             },
-        }
+        },
+        {
+            method: "GET",
+            handler: "unit.getShowcase",
+            path: "/units/showcase",
+            config: {
+                policies: [],
+                middlewares: [],
+            },
+        },
     ],
 };
