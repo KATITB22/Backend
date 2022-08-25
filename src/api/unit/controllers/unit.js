@@ -143,12 +143,10 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
     async getShowcase() {
         const entity = await strapi.db.query("api::unit.unit").findMany({
             populate: { image: true },
+            orderBy: { visitors: "asc" },
+            limit: 3,
         });
 
-        const unitShowcase = entity.sort(
-            (first, second) => first.visitors - second.visitors
-        );
-
-        return unitShowcase.slice(0, 3);
+        return entity;
     },
 }));
