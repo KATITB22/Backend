@@ -45,6 +45,10 @@
     "visitors": {
       "type": "integer",
       "default": 0
+    },
+    "isLive": {
+      "type": "boolean",
+      "default": false
     }
   }
 }

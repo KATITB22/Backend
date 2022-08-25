@@ -151,4 +151,31 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
 
         return unitShowcase.slice(0, 3);
     },
+
+    async getLiveStatus(ctx) {
+        const { unit } = ctx.params;
+
+        const entity = await strapi.db.query("api::unit.unit").findOne({
+            where: { name: unit },
+            select: ["isLive"],
+        });
+
+        return entity;
+    },
+
+    async updateLiveStatus(ctx) {
+        const { unit } = ctx.params;
+        const { status } = ctx.request.body;
+
+        const entity = await strapi.db.query("api::unit.unit").update({
+            select: ["isLive"],
+            where: { name: unit },
+            data: {
+                isLive: status,
+            },
+        });
+        entity.message = "SUCCESS";
+
+        return entity;
+    },
 }));
