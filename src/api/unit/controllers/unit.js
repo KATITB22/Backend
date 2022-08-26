@@ -276,4 +276,14 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
 
         return values;
     },
+
+    async createMany(ctx) {
+        const { data } = ctx.request.body;
+
+        const entity = await strapi.db
+            .query("api::unit.unit")
+            .createMany({ data });
+
+        return entity;
+    },
 }));
