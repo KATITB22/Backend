@@ -32,16 +32,13 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
 
         const entity = await strapi.db.query("api::unit.unit").findOne({
             where: { ext_id: id },
-            populate: { logo: true },
         });
 
         return entity;
     },
 
     async find() {
-        const entity = await strapi.db.query("api::unit.unit").findMany({
-            populate: { logo: true },
-        });
+        const entity = await strapi.db.query("api::unit.unit").findMany();
 
         return entity;
     },
@@ -179,7 +176,6 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
 
     async getShowcase() {
         const entity = await strapi.db.query("api::unit.unit").findMany({
-            populate: { logo: true },
             orderBy: { visitors: "asc" },
             limit: 3,
         });
@@ -219,10 +215,6 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
             },
             orderBy: {
                 lelang: "desc",
-            },
-            populate: {
-                logo: true,
-                fullImage: true,
             },
         });
 
