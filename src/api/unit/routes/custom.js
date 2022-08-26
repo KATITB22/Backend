@@ -74,5 +74,14 @@ module.exports = {
                 middlewares: [],
             },
         },
+        {
+            method: "POST",
+            handler: "unit.createMany",
+            path: "/units/createMany",
+            config: {
+                policies: [],
+                middlewares: [],
+            },
+        },
     ],
 };
