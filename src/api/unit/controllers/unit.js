@@ -53,7 +53,7 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
         const updatedEntity = await strapi.db.query("api::unit.unit").update({
             where: { ext_id: id },
             data: {
-                visitors: entity.visitors+1,
+                visitors: entity.visitors + 1,
             },
         });
         return updatedEntity;
@@ -67,7 +67,7 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
             facultys = defFaculty,
         } = ctx.query;
         const filterFaculty =
-            facultys.length === 18 ? facultys : facultys.split(",");
+            facultys.length === 18 ? defFaculty : facultys.split(",");
         const [entity, count] = await strapi.db
             .query("plugin::users-permissions.user")
             .findWithCount({
@@ -82,28 +82,36 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
                     faculty: {
                         $in: filterFaculty,
                     },
-                    $or: [
+                    $and: [
                         {
-                            username: { $containsi: search },
+                            $or: [
+                                {
+                                    username: { $containsi: search },
+                                },
+                                {
+                                    name: { $containsi: search },
+                                },
+                            ],
                         },
                         {
-                            name: { $containsi: search },
-                        },
-                    ],
-                    $or: [
-                        {
-                            hideScoreboard: false,
-                        },
-                        {
-                            hideScoreboard: null,
-                        },
-                    ],
-                    $or: [
-                        {
-                            score: { $gt: 0 },
+                            $or: [
+                                {
+                                    hideScoreboard: false,
+                                },
+                                {
+                                    hideScoreboard: null,
+                                },
+                            ],
                         },
                         {
-                            score: { $ne: null },
+                            $or: [
+                                {
+                                    score: { $gt: 0 },
+                                },
+                                {
+                                    score: { $ne: null },
+                                },
+                            ],
                         },
                     ],
                 },
