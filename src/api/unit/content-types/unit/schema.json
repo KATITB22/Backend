@@ -22,14 +22,6 @@
       "unique": true,
       "maxLength": 30
     },
-    "image": {
-      "type": "media",
-      "multiple": false,
-      "required": true,
-      "allowedTypes": [
-        "images"
-      ]
-    },
     "link": {
       "type": "string"
     },
@@ -52,12 +44,15 @@
       "required": true
     },
     "logo": {
-      "type": "media",
-      "multiple": false,
-      "required": true,
+      "type": "string",
+      "required": true
+    },
+    "image": {
       "allowedTypes": [
         "images"
-      ]
+      ],
+      "type": "media",
+      "multiple": true
     }
   }
 }
