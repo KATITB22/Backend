@@ -49,6 +49,13 @@
     "position": {
       "type": "json",
       "required": false
+    },
+    "logo": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": false
     }
   }
 }

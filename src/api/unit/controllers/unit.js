@@ -161,7 +161,7 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
         const values = entities.map((entity) => ({
             ext_id: entity.ext_id,
             name: entity.name,
-            url: entity.image.url,
+            url: entity.logo.url,
             position: entity.position,
         }));
 
