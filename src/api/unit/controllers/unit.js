@@ -155,13 +155,15 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
     async getMap() {
         const entities = await strapi.db.query("api::unit.unit").findMany({
             select: ["ext_id", "name", "position"],
-            populate: { image: true },
+            populate: { logo: true },
         });
+
+        console.log(entities);
 
         const values = entities.map((entity) => ({
             ext_id: entity.ext_id,
             name: entity.name,
-            url: entity.logo.url,
+            url: entity.logo.formats.thumbnail.url,
             position: entity.position,
         }));
 
