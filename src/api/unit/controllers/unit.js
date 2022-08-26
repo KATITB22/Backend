@@ -46,15 +46,17 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
     async update(ctx) {
         const { id } = ctx.params;
 
-        const { visitors } = ctx.request.body;
+        const entity = await strapi.db.query("api::unit.unit").findOne({
+            where: { ext_id: id },
+        });
 
-        const entity = await strapi.db.query("api::unit.unit").update({
+        const updatedEntity = await strapi.db.query("api::unit.unit").update({
             where: { ext_id: id },
             data: {
-                visitors,
+                visitors: entity.visitors+1,
             },
         });
-        return entity;
+        return updatedEntity;
     },
 
     async getScore(ctx) {
