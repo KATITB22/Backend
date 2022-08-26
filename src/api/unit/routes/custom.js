@@ -29,5 +29,14 @@ module.exports = {
                 middlewares: [],
             },
         },
+        {
+            method: "GET",
+            handler: "unit.findParticipant",
+            path: "/units/participant",
+            config: {
+                policies: [],
+                middlewares: [],
+            },
+        },
     ],
 };

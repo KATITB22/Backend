@@ -186,4 +186,29 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
 
         return entity;
     },
+
+    async findParticipant(ctx) {
+        const { search } = ctx.query;
+
+        const entity = await strapi.db
+            .query("plugin::users-permissions.user")
+            .findOne({
+                where: {
+                    role: {
+                        name: "Participant",
+                    },
+                    $or: [
+                        {
+                            name: search,
+                        },
+                        {
+                            username: search,
+                        },
+                    ],
+                },
+                select: ["username", "name", "score"],
+            });
+
+        return entity;
+    },
 }));
