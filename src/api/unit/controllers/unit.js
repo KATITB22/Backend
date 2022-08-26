@@ -126,18 +126,55 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
     },
 
     async updateScore(ctx) {
-        const { username, score } = ctx.request.body;
+        const { username, score, username_unit } = ctx.request.body;
 
-        const entity = await strapi.db
+        const unit = await strapi.db
+            .query("plugin::users-permissions.user")
+            .findOne({
+                where: { username: username_unit },
+            });
+
+        if (
+            !unit ||
+            unit.score === null ||
+            unit.score <= 0 ||
+            unit.score - score <= 0
+        ) {
+            return ctx.badRequest("Skor tidak memadai");
+        }
+
+        const user = await strapi.db
+            .query("plugin::users-permissions.user")
+            .findOne({
+                where: { username },
+            });
+
+        unit.score -= score;
+        user.score += score;
+
+        const newUser = await strapi.db
             .query("plugin::users-permissions.user")
             .update({
-                select: ["username", "name", "score", "faculty"],
+                select: ["username", "name", "score"],
                 where: { username },
-                data: { score },
+                data: { score: user.score },
             });
-        entity.message = "SUCCESS";
 
-        return entity;
+        const newUnit = await strapi.db
+            .query("plugin::users-permissions.user")
+            .update({
+                select: ["username", "name", "score"],
+                where: { username: username_unit },
+                data: { score: unit.score },
+            });
+
+        return {
+            data: {
+                user: newUser,
+                unit: newUnit,
+            },
+            message: "SUCCESS",
+        };
     },
 
     async getShowcase() {
