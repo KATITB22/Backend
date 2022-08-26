@@ -22,7 +22,7 @@
       "unique": true,
       "maxLength": 30
     },
-    "image": {
+    "logo": {
       "type": "media",
       "multiple": false,
       "required": false,
@@ -45,6 +45,33 @@
     "visitors": {
       "type": "integer",
       "default": 0
+    },
+    "isRec": {
+      "type": "boolean",
+      "default": false
+    },
+    "isFullImg": {
+      "type": "boolean",
+      "default": false
+    },
+    "fullImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "lelang": {
+      "type": "integer",
+      "default": 0
+    },
+    "isLive": {
+      "type": "boolean",
+      "default": false
     }
   }
 }

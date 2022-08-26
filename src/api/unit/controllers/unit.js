@@ -32,7 +32,7 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
 
         const entity = await strapi.db.query("api::unit.unit").findOne({
             where: { ext_id: id },
-            populate: { image: true },
+            populate: { logo: true },
         });
 
         return entity;
@@ -40,7 +40,7 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
 
     async find() {
         const entity = await strapi.db.query("api::unit.unit").findMany({
-            populate: { image: true },
+            populate: { logo: true },
         });
 
         return entity;
@@ -179,7 +179,7 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
 
     async getShowcase() {
         const entity = await strapi.db.query("api::unit.unit").findMany({
-            populate: { image: true },
+            populate: { logo: true },
             orderBy: { visitors: "asc" },
             limit: 3,
         });
@@ -208,6 +208,54 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
                 },
                 select: ["username", "name", "score"],
             });
+
+        return entity;
+    },
+
+    async getRecommendation() {
+        const entity = await strapi.db.query("api::unit.unit").findMany({
+            where: {
+                isRec: true,
+            },
+            orderBy: {
+                lelang: "desc",
+            },
+            populate: {
+                logo: true,
+                fullImage: true,
+            },
+        });
+
+        return entity;
+    },
+
+    async getLiveStatus(ctx) {
+        const { name } = ctx.query;
+
+        const entity = await strapi.db.query("api::unit.unit").findOne({
+            where: {
+                name: name,
+            },
+            select: ["name", "isLive"],
+        });
+
+        return entity;
+    },
+
+    async updateLiveStatus(ctx) {
+        const { name, status } = ctx.request.body;
+
+        const entity = await strapi.db.query("api::unit.unit").update({
+            where: {
+                name: name,
+            },
+            data: {
+                isLive: status,
+            },
+            select: ["name", "isLive"],
+        });
+
+        entity.message = "SUCCESS";
 
         return entity;
     },

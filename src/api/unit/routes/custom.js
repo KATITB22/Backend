@@ -38,5 +38,32 @@ module.exports = {
                 middlewares: [],
             },
         },
+        {
+            method: "GET",
+            handler: "unit.getRecommendation",
+            path: "/units/recommendation",
+            config: {
+                policies: [],
+                middlewares: [],
+            },
+        },
+        {
+            method: "GET",
+            handler: "unit.getLiveStatus",
+            path: "/units/live",
+            config: {
+                policies: [],
+                middlewares: [],
+            },
+        },
+        {
+            method: "PUT",
+            handler: "unit.updateLiveStatus",
+            path: "/units/live",
+            config: {
+                policies: [],
+                middlewares: [],
+            },
+        },
     ],
 };
