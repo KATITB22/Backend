@@ -259,4 +259,21 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
 
         return entity;
     },
+
+    async getMap() {
+        const entities = await strapi.db.query("api::unit.unit").findMany({
+            select: ["ext_id", "name", "logo", "position"],
+        });
+
+        console.log(entities);
+
+        const values = entities.map((entity) => ({
+            ext_id: entity.ext_id,
+            name: entity.name,
+            url: entity.logo,
+            position: entity.position,
+        }));
+
+        return values;
+    },
 }));

@@ -31,6 +31,15 @@ module.exports = {
         },
         {
             method: "GET",
+            handler: "unit.getMap",
+            path: "/units/map",
+            config: {
+                policies: [],
+                middlewares: [],
+            },
+        },
+        {
+            method: "GET",
             handler: "unit.findParticipant",
             path: "/units/participant",
             config: {
