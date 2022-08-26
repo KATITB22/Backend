@@ -8,7 +8,7 @@ const configFactory =
                 connection: {
                     host: env("DATABASE_HOST", "127.0.0.1"),
                     port: env.int("DATABASE_PORT", 5432),
-                    database: env("DATABASE_NAME", "KAT"),
+                    database: env("DATABASE_NAME", "kat"),
                     user: env("DATABASE_USERNAME", "postgres"),
                     password: env("DATABASE_PASSWORD", "password"),
                     ssl: false,

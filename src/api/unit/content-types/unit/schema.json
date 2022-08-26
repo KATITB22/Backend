@@ -47,12 +47,30 @@
       "type": "string",
       "required": true
     },
-    "image": {
-      "allowedTypes": [
-        "images"
-      ],
-      "type": "media",
-      "multiple": true
+    "isRec": {
+      "type": "boolean",
+      "default": false
+    },
+    "isFullImg": {
+      "type": "boolean",
+      "default": false
+    },
+    "lelang": {
+      "type": "integer",
+      "default": 0
+    },
+    "isLive": {
+      "type": "boolean",
+      "default": false
+    },
+    "fullImage": {
+      "type": "string"
+    },
+    "coloredIcon": {
+      "type": "string"
+    },
+    "bnwIcon": {
+      "type": "string"
     }
   }
 }
