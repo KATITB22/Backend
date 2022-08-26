@@ -76,6 +76,9 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
                 orderBy: { score: "desc", username: "asc" },
                 select: ["username", "name", "score", "faculty"],
                 where: {
+                    score: {
+                        $gt: 0,
+                    },
                     role: {
                         name: "Participant",
                     },
@@ -100,16 +103,6 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
                                 },
                                 {
                                     hideScoreboard: null,
-                                },
-                            ],
-                        },
-                        {
-                            $or: [
-                                {
-                                    score: { $gt: 0 },
-                                },
-                                {
-                                    score: { $ne: null },
                                 },
                             ],
                         },
