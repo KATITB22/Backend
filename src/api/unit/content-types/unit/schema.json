@@ -22,14 +22,6 @@
       "unique": true,
       "maxLength": 30
     },
-    "image": {
-      "type": "media",
-      "multiple": false,
-      "required": false,
-      "allowedTypes": [
-        "images"
-      ]
-    },
     "link": {
       "type": "string"
     },
@@ -44,7 +36,41 @@
     },
     "visitors": {
       "type": "integer",
+      "default": 0,
+      "required": false
+    },
+    "position": {
+      "type": "json",
+      "required": true
+    },
+    "logo": {
+      "type": "string",
+      "required": true
+    },
+    "isRec": {
+      "type": "boolean",
+      "default": false
+    },
+    "isFullImg": {
+      "type": "boolean",
+      "default": false
+    },
+    "lelang": {
+      "type": "integer",
       "default": 0
+    },
+    "isLive": {
+      "type": "boolean",
+      "default": false
+    },
+    "fullImage": {
+      "type": "string"
+    },
+    "coloredIcon": {
+      "type": "string"
+    },
+    "bnwIcon": {
+      "type": "string"
     }
   }
 }

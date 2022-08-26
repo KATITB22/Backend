@@ -32,7 +32,7 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
 
         const entity = await strapi.db.query("api::unit.unit").findOne({
             where: { ext_id: id },
-            populate: { image: true },
+            populate: { logo: true },
         });
 
         return entity;
@@ -40,7 +40,7 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
 
     async find() {
         const entity = await strapi.db.query("api::unit.unit").findMany({
-            populate: { image: true },
+            populate: { logo: true },
         });
 
         return entity;
@@ -126,29 +126,164 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
     },
 
     async updateScore(ctx) {
-        const { username, score } = ctx.request.body;
+        const { username, score, username_unit } = ctx.request.body;
+
+        const unit = await strapi.db
+            .query("plugin::users-permissions.user")
+            .findOne({
+                where: { username: username_unit },
+            });
+
+        if (
+            !unit ||
+            unit.score === null ||
+            unit.score <= 0 ||
+            unit.score - score <= 0
+        ) {
+            return ctx.badRequest("Skor tidak memadai");
+        }
+
+        const user = await strapi.db
+            .query("plugin::users-permissions.user")
+            .findOne({
+                where: { username },
+            });
+
+        unit.score -= score;
+        user.score += score;
+
+        const newUser = await strapi.db
+            .query("plugin::users-permissions.user")
+            .update({
+                select: ["username", "name", "score"],
+                where: { username },
+                data: { score: user.score },
+            });
+
+        const newUnit = await strapi.db
+            .query("plugin::users-permissions.user")
+            .update({
+                select: ["username", "name", "score"],
+                where: { username: username_unit },
+                data: { score: unit.score },
+            });
+
+        return {
+            data: {
+                user: newUser,
+                unit: newUnit,
+            },
+            message: "SUCCESS",
+        };
+    },
+
+    async getShowcase() {
+        const entity = await strapi.db.query("api::unit.unit").findMany({
+            populate: { logo: true },
+            orderBy: { visitors: "asc" },
+            limit: 3,
+        });
+
+        return entity;
+    },
+
+    async findParticipant(ctx) {
+        const { search } = ctx.query;
 
         const entity = await strapi.db
             .query("plugin::users-permissions.user")
-            .update({
-                select: ["username", "name", "score", "faculty"],
-                where: { username },
-                data: { score },
+            .findOne({
+                where: {
+                    role: {
+                        name: "Participant",
+                    },
+                    $or: [
+                        {
+                            name: search,
+                        },
+                        {
+                            username: search,
+                        },
+                    ],
+                },
+                select: ["username", "name", "score"],
             });
+
+        return entity;
+    },
+
+    async getRecommendation() {
+        const entity = await strapi.db.query("api::unit.unit").findMany({
+            where: {
+                isRec: true,
+            },
+            orderBy: {
+                lelang: "desc",
+            },
+            populate: {
+                logo: true,
+                fullImage: true,
+            },
+        });
+
+        return entity;
+    },
+
+    async getLiveStatus(ctx) {
+        const { name } = ctx.query;
+
+        const entity = await strapi.db.query("api::unit.unit").findOne({
+            where: {
+                name: name,
+            },
+            select: ["name", "isLive"],
+        });
+
+        return entity;
+    },
+
+    async updateLiveStatus(ctx) {
+        const { name, status } = ctx.request.body;
+
+        const entity = await strapi.db.query("api::unit.unit").update({
+            where: {
+                name: name,
+            },
+            data: {
+                isLive: status,
+            },
+            select: ["name", "isLive"],
+        });
+
         entity.message = "SUCCESS";
 
         return entity;
     },
 
-    async getShowcase() {
-        const entity = await strapi.db.query("api::unit.unit").findMany({
-            populate: { image: true },
+    async getMap() {
+        const entities = await strapi.db.query("api::unit.unit").findMany({
+            select: ["ext_id", "name", "logo", "position"],
         });
 
-        const unitShowcase = entity.sort(
-            (first, second) => first.visitors - second.visitors
-        );
+        console.log(entities);
 
-        return unitShowcase.slice(0, 3);
+        const values = entities.map((entity) => ({
+            ext_id: entity.ext_id,
+            name: entity.name,
+            url: entity.logo,
+            position: entity.position,
+        }));
+
+        return values;
+    },
+
+    async createMany(ctx) {
+        const { data } = ctx.request.body;
+
+        const entity = await strapi.db
+            .query("api::unit.unit")
+            .createMany({ data });
+
+        return entity;
     },
 }));

@@ -33,8 +33,8 @@ module.exports = createCoreController("api::event.event", ({ strapi }) => ({
                 "title",
                 "attendance_start",
                 "attendance_end",
-                "ext_id",
                 "attendance_type",
+                "ext_id",
             ],
         });
         const result = Array.isArray(entities)
