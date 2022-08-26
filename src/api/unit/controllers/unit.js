@@ -264,13 +264,13 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
             ],
         });
 
-        console.log(entities);
-
         const values = entities.map((entity) => ({
             ext_id: entity.ext_id,
             name: entity.name,
             url: entity.logo,
             position: entity.position,
+            coloredIcon: entity.coloredIcon,
+            bnwIcon: entity.bnwIcon,
         }));
 
         return values;
