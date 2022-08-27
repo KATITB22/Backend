@@ -132,6 +132,12 @@
     "hideScoreboard": {
       "type": "boolean",
       "default": false
+    },
+    "insight_results": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::insight-result.insight-result",
+      "mappedBy": "user"
     }
   }
 }
