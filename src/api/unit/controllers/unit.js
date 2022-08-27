@@ -126,55 +126,57 @@ module.exports = createCoreController("api::unit.unit", ({ strapi }) => ({
     },
 
     async updateScore(ctx) {
-        const { username, score, username_unit } = ctx.request.body;
+        return ctx.badRequest("Yah, point sudah tidak bisa diberikan :(");
 
-        const unit = await strapi.db
-            .query("plugin::users-permissions.user")
-            .findOne({
-                where: { username: username_unit },
-            });
+        // const { username, score, username_unit } = ctx.request.body;
 
-        if (
-            !unit ||
-            unit.score === null ||
-            unit.score <= 0 ||
-            unit.score - score <= 0
-        ) {
-            return ctx.badRequest("Skor tidak memadai");
-        }
+        // const unit = await strapi.db
+        //     .query("plugin::users-permissions.user")
+        //     .findOne({
+        //         where: { username: username_unit },
+        //     });
 
-        const user = await strapi.db
-            .query("plugin::users-permissions.user")
-            .findOne({
-                where: { username },
-            });
+        // if (
+        //     !unit ||
+        //     unit.score === null ||
+        //     unit.score <= 0 ||
+        //     unit.score - score <= 0
+        // ) {
+        //     return ctx.badRequest("Skor tidak memadai");
+        // }
 
-        unit.score -= score;
-        user.score += score;
+        // const user = await strapi.db
+        //     .query("plugin::users-permissions.user")
+        //     .findOne({
+        //         where: { username },
+        //     });
 
-        const newUser = await strapi.db
-            .query("plugin::users-permissions.user")
-            .update({
-                select: ["username", "name", "score"],
-                where: { username },
-                data: { score: user.score },
-            });
+        // unit.score -= score;
+        // user.score += score;
 
-        const newUnit = await strapi.db
-            .query("plugin::users-permissions.user")
-            .update({
-                select: ["username", "name", "score"],
-                where: { username: username_unit },
-                data: { score: unit.score },
-            });
+        // const newUser = await strapi.db
+        //     .query("plugin::users-permissions.user")
+        //     .update({
+        //         select: ["username", "name", "score"],
+        //         where: { username },
+        //         data: { score: user.score },
+        //     });
 
-        return {
-            data: {
-                user: newUser,
-                unit: newUnit,
-            },
-            message: "SUCCESS",
-        };
+        // const newUnit = await strapi.db
+        //     .query("plugin::users-permissions.user")
+        //     .update({
+        //         select: ["username", "name", "score"],
+        //         where: { username: username_unit },
+        //         data: { score: unit.score },
+        //     });
+
+        // return {
+        //     data: {
+        //         user: newUser,
+        //         unit: newUnit,
+        //     },
+        //     message: "SUCCESS",
+        // };
     },
 
     async getShowcase() {
