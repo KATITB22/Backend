@@ -18,8 +18,13 @@
       "target": "plugin::users-permissions.user",
       "inversedBy": "insight_results"
     },
-    "images": {
-      "type": "json"
+    "image_url": {
+      "type": "string",
+      "required": true
+    },
+    "page": {
+      "type": "integer",
+      "required": true
     }
   }
 }

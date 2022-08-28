@@ -23,21 +23,22 @@ module.exports = createCoreController('api::insight-result.insight-result', ({ s
                 });
 
             if (!user) return ctx.badRequest("User not found", { username: username });
-            
-            insightResult.push({
-                user: user.id,
-                images: images
-            })
+
+            for (let image of images) {
+                const result = await strapi.db
+                    .query("api::insight-result.insight-result")
+                    .create({
+                        data: {
+                            user: user.id,
+                            image_url: image.url,
+                            page: image.page
+                        }
+                    })
+                insightResult.push(result)
+            }
         }
 
-        const result = await strapi.db
-            .query("api::insight-result.insight-result")
-            .createMany({
-                data: insightResult
-            })
-
         return {
-            count: result,
             data: insightResult
         };
     },
@@ -45,10 +46,11 @@ module.exports = createCoreController('api::insight-result.insight-result', ({ s
     async find(ctx) {
         const result = await strapi.db
             .query('api::insight-result.insight-result')
-            .findOne({
+            .findMany({
                 where: {
                     user: ctx.state.user.id
-                }
+                },
+                select: ["image_url", "page"]
             })
 
 
