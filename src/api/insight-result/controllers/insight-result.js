@@ -13,7 +13,7 @@ module.exports = createCoreController('api::insight-result.insight-result', ({ s
         let insightResult = []
 
         for (let value of data) {
-            const { username, images } = value;
+            const { username, image, page } = value;
 
             const user = await strapi.db
                 .query("plugin::users-permissions.user")
@@ -24,18 +24,17 @@ module.exports = createCoreController('api::insight-result.insight-result', ({ s
 
             if (!user) return ctx.badRequest("User not found", { username: username });
 
-            for (let image of images) {
-                const result = await strapi.db
-                    .query("api::insight-result.insight-result")
-                    .create({
-                        data: {
-                            user: user.id,
-                            image_url: image.url,
-                            page: image.page
-                        }
-                    })
-                insightResult.push(result)
-            }
+            const result = await strapi.db
+                .query("api::insight-result.insight-result")
+                .create({
+                    data: {
+                        user: user.id,
+                        image_url: image,
+                        page: page
+                    }
+                })
+
+            insightResult.push(result)
         }
 
         return {
@@ -52,7 +51,6 @@ module.exports = createCoreController('api::insight-result.insight-result', ({ s
                 },
                 select: ["image_url", "page"]
             })
-
 
         if (!result) {
             return {
