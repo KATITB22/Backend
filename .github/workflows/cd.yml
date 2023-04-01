@@ -11,7 +11,7 @@ jobs:
         steps:
             - uses: actions/checkout@v3
             - name: Publish Latest to Registry
-              uses: elgohr/Publish-Docker-Github-Action@master
+              uses: elgohr/Publish-Docker-Github-Action@v5
               with:
                   name: KATITB22/Backend/production
                   username: ${{ secrets.PKG_REGISTRY_USERNAME }}
